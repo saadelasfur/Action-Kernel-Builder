@@ -44,7 +44,7 @@ DETECT_BRANCH()
     if [[ "$branch_name" == "ksu-permissive" ]]; then
         echo "----------------------------------------------"
         echo "OneUI Branch Detected..."
-        BUILD_VARIANT="OneUI$EROFS_SUFFIX_permissive"
+        BUILD_VARIANT="OneUI${EROFS_SUFFIX}_permissive"
     else
         echo "----------------------------------------------"
         echo "Branch not recognized..."
