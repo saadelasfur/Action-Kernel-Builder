@@ -131,7 +131,6 @@ fi;
 mkdir -p "$TMPDIR";
 package_extract_dir "mesa" "$TMPDIR";
 set_metadata_recursive "$TMPDIR" uid "0" gid "0" dmode "0755" fmode "0644";
-set_metadata "$TMPDIR/bspatch" uid "0" gid "0" mode "0755";
 
 ui_print " ";
 
@@ -156,24 +155,11 @@ fi;
 [ -f /vendor/recovery-from-boot.p ] && rm "/vendor/recovery-from-boot.p";
 
 ui_print "- Flashing boot.img...";
-if [ ! -f $TMPDIR/$VARIANT/boot.img ]; then
-  $TMPDIR/bspatch "$TMPDIR/eur/boot.img" "$TMPDIR/$VARIANT/boot.img" "$TMPDIR/$VARIANT/boot.img.p";
-fi;
 write_raw_image "$TMPDIR/$VARIANT/boot.img" "/dev/block/bootdevice/by-name/boot";
 ui_print "- Flashing dtbo.img...";
 write_raw_image "$TMPDIR/$VARIANT/dtbo.img" "/dev/block/bootdevice/by-name/dtbo";
 ui_print "- Flashing vendor_boot.img...";
 write_raw_image "$TMPDIR/$VARIANT/vendor_boot.img" "/dev/block/bootdevice/by-name/vendor_boot";
-
-ui_print "- Extracting kernel modules...";
-rm "/vendor/bin/vendor_modprobe.sh";
-rm -r "/vendor/lib/modules";
-package_extract_dir "vendor" "/vendor";
-set_metadata "/vendor/bin/vendor_modprobe.sh" uid "0" gid "2000" mode "0755" selabel "u:object_r:vendor_modinstall-sh_exec:s0";
-set_metadata "/vendor/lib/modules" uid "0" gid "2000" mode "0755" selabel "u:object_r:vendor_file:s0";
-for file in '/vendor/lib/modules/*'; do
-  set_metadata $file uid "0" gid "0" mode "0644" selabel "u:object_r:vendor_file:s0";
-done;
 
 ui_print "- Unmounting /vendor...";
 rm -r "$TMPDIR";
