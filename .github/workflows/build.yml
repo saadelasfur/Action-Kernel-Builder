@@ -69,13 +69,8 @@ jobs:
           cd "${{ env.WORK_DIR }}"
           [[ -d "clang-toolchain" ]] && rm -rf clang-toolchain
           [[ -d "tmp" ]] && rm -rf tmp
-          mkdir tmp
-          cd tmp
-          git init && git remote add origin https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86
-          git fetch --depth=1 origin refs/heads/llvm-r383902b
-          git checkout FETCH_HEAD -- clang-r383902
-          mv clang-r383902 "${{ env.WORK_DIR }}/clang-toolchain"
-          cd ..
+          git clone --depth=1 --branch android11-qpr3-release https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 ./tmp
+          mv tmp/clang-r383902b1 clang-toolchain
           rm -rf tmp
 
       - name: Clone kernel source
