@@ -223,7 +223,7 @@ MAKE_INSTALLER()
     sed -i -e "s/build_var/$BUILD_VARIANT/g" -e "s/ksu_version/$KSU_VER/g" $OUT_DIR/out/zip/META-INF/com/google/android/update-binary
     cd $OUT_DIR/out/zip/
     find . -exec touch -a -c -m -t 200901010000.00 {} +
-    7z a -tzip -mx=5 ${RELEASE_VERSION}_m52xq_${BUILD_VARIANT}.zip mesa META-INF vendor
+    7z a -tzip -mx=5 ${RELEASE_VERSION}_m52xq_${BUILD_VARIANT}.zip mesa META-INF
     mv ${RELEASE_VERSION}_m52xq_${BUILD_VARIANT}.zip $OUT_DIR/${RELEASE_VERSION}_m52xq_${BUILD_VARIANT}.zip
 }
 # ]
