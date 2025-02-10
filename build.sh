@@ -36,6 +36,10 @@ KSU_VER="v1.0.3"
 RELEASE_VERSION="KSU_$KSU_VER-$DATE"
 [[ "$NEXT_BUILD" == "true" ]] && RELEASE_VERSION="KSU-Next_$KSU_VER-$DATE"
 
+# Set updater related variables
+BUILD_DATE="$(date +"%Y-%m-%d %H:%M:%S")"
+BUILD_FP="samsung/m52xqxx/m52xq:11/RP1A.200720.012/M526BRXXS6CXJ1:user/release-keys"
+
 MAKE_PARAMS="-j$JOBS -C $SRC_DIR O=$SRC_DIR/out \
     ARCH=arm64 CLANG_TRIPLE=aarch64-linux-gnu- LLVM=1 LLVM_IAS=1 \
     CROSS_COMPILE=$TC_DIR/bin/llvm-"
@@ -219,8 +223,15 @@ PACK_CUSTOM_VENDOR_BOOT_IMG()
 MAKE_INSTALLER()
 {
     cp -r $WORK_DIR/m52xq/template/META-INF $OUT_DIR/out/zip/META-INF
-    [[ "$NEXT_BUILD" == "true" ]] && sed -i "s/KernelSU/KernelSU-Next/g" $OUT_DIR/out/zip/META-INF/com/google/android/update-binary
-    sed -i -e "s/build_var/$BUILD_VARIANT/g" -e "s/ksu_version/$KSU_VER/g" $OUT_DIR/out/zip/META-INF/com/google/android/update-binary
+    [[ "$NEXT_BUILD" == "true" ]] && sed -i \
+        "s/KernelSU/KernelSU-Next/g" \
+        $OUT_DIR/out/zip/META-INF/com/google/android/update-binary
+    sed -i \
+        -e "s/ksu_version/$KSU_VER/g" \
+        -e "s/build_var/$BUILD_VARIANT/g" \
+        -e "s/build_date/$BUILD_DATE/g" \
+        -e "s/build_fp/$BUILD_FP/g" \
+        $OUT_DIR/out/zip/META-INF/com/google/android/update-binary
     cd $OUT_DIR/out/zip/
     find . -exec touch -a -c -m -t 200901010000.00 {} +
     7z a -tzip -mx=5 ${RELEASE_VERSION}_m52xq_${BUILD_VARIANT}.zip mesa META-INF
